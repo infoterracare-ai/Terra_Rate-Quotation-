@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/nocturne-6b350e0a-0cfd-4d7c-aed0-af2f3b07bb41/styles.css">
+<script src="_ds/nocturne-6b350e0a-0cfd-4d7c-aed0-af2f3b07bb41/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+body{margin:0;background:var(--color-bg);font-family:var(--font-body)}
+a{color:var(--color-accent-300);text-decoration:none}
+a:hover{color:var(--color-accent-200)}
+.rc-in{width:100%;box-sizing:border-box;background:#1b1d2b;color:var(--color-text);border:1px solid var(--color-neutral-800);border-radius:var(--radius-md);padding:11px 12px;font:500 16px var(--font-body);outline:none;-moz-appearance:textfield}
+.rc-in::-webkit-outer-spin-button,.rc-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.rc-in:focus{border-color:var(--color-accent);box-shadow:0 0 0 3px rgba(145,132,217,.18)}
+.rc-in::placeholder{color:var(--color-neutral-600)}
+.rc-req{border-color:var(--color-accent-600);background:rgba(145,132,217,.07)}
+.rc-lbl{display:block;font:500 11px var(--font-body);letter-spacing:.09em;text-transform:uppercase;color:var(--color-neutral-500);margin:0 0 6px}
+.rc-star{color:var(--color-accent-400)}
+.rc-tap{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .15s,border-color .15s}
+.rc-tap:active{background:rgba(145,132,217,.12)}
+.rc-card{background:var(--color-surface);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:14px 14px 16px}
+.rc-sec{font:500 11px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--color-neutral-500);margin:22px 0 10px}
+.rc-rowbtn{display:flex;align-items:center;gap:10px;padding:9px 0}
+select.rc-in{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--color-neutral-500) 50%),linear-gradient(135deg,var(--color-neutral-500) 50%,transparent 50%);background-position:calc(100% - 17px) 21px,calc(100% - 12px) 21px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+::-webkit-scrollbar{width:0}
+</style>
+</helmet>
+<div style="min-height:100vh;background:radial-gradient(1100px 600px at 18% -10%, #1d2033 0%, var(--color-bg) 62%);padding:40px 44px 64px;display:flex;gap:56px;align-items:flex-start;flex-wrap:wrap">
+
+  <div style="max-width:330px;padding-top:18px">
+    <div style="font:500 12px var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-400)">Terracare · internal</div>
+    <h1 style="font:500 34px/1.15 var(--font-heading);color:var(--color-text);margin:12px 0 14px;text-wrap:pretty">Rate Calculator — Gabion</h1>
+    <p style="font:400 14px/1.65 var(--font-body);color:var(--color-neutral-400);margin:0 0 22px">The Rate Working sheet as a phone app. Name, phone and location are mandatory before a rate is issued; raw material working stays internal — never shown, never exported — and every quote exports to Excel with its inputs and result.</p>
+    <div style="height:1px;background:linear-gradient(90deg,transparent,var(--color-neutral-800) 18%,var(--color-neutral-800) 82%,transparent);margin:0 0 20px"></div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <sc-for list="{{ jumpItems }}" as="j" hint-placeholder-count="4">
+        <div class="rc-tap" onClick="{{ j.go }}" style="display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:var(--radius-md);background:{{ j.bg }}">
+          <span style="font:500 11px ui-monospace,Menlo,monospace;color:var(--color-accent-400)">{{ j.n }}</span>
+          <span style="font:500 13px var(--font-body);color:var(--color-text)">{{ j.label }}</span>
+          <span style="font:400 12px var(--font-body);color:var(--color-neutral-600);margin-left:auto">{{ j.note }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <p style="font:400 12px/1.6 var(--font-body);color:var(--color-neutral-600);margin:22px 0 0">Formulas carried over from Rate Working.xlsx run behind the screen: surface area incl. diaphragm and transverse walls (whole-number wall counts), unit weight from the spec table — box column for boxes, mesh column for rolls, where box making drops to zero automatically.</p>
+  </div>
+
+  <div style="filter:drop-shadow(0 30px 60px rgba(0,0,0,.5))">
+  <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402px,874px">
+    <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg);padding-top:56px;box-sizing:border-box">
+
+      <div style="flex:none;display:flex;align-items:center;gap:10px;padding:6px 18px 12px">
+        <div class="rc-tap" onClick="{{ back }}" style="width:34px;height:34px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:{{ backBg }};color:var(--color-accent-300);font:400 19px var(--font-body)">‹</div>
+        <div style="min-width:0">
+          <div style="font:500 17px var(--font-heading);color:var(--color-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ screenTitle }}</div>
+          <div style="font:400 11px var(--font-body);color:var(--color-neutral-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ screenSub }}</div>
+        </div>
+      </div>
+
+      <div style="flex:1;overflow:auto;position:relative">
+
+        <sc-if value="{{ isRates }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ isLocked }}" hint-placeholder-val="{{ true }}">
+            <div style="padding:40px 28px">
+              <div style="font:500 20px var(--font-heading);color:var(--color-text)">Admin only</div>
+              <div style="font:400 13px/1.6 var(--font-body);color:var(--color-neutral-500);margin:8px 0 22px">Raw material rates and calculation factors are hidden from sales. Enter the admin PIN to edit them.</div>
+              <label class="rc-lbl">PIN</label>
+              <input class="rc-in" type="password" value="{{ pinEntry }}" onChange="{{ setPinEntry }}" inputMode="numeric" placeholder="••••" style="letter-spacing:6px;font-size:20px;text-align:center">
+              <div style="font:400 11px var(--font-body);color:{{ pinMsgColor }};margin-top:8px">{{ pinMsg }}</div>
+              <div class="rc-tap" onClick="{{ unlock }}" style="margin-top:18px;border:1px solid var(--color-accent);color:var(--color-accent-200);border-radius:var(--radius-md);padding:13px;text-align:center;font:500 15px var(--font-body);background:rgba(145,132,217,.06)">Unlock</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isUnlocked }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:4px 18px 40px">
+              <div style="font:400 12px var(--font-body);color:var(--color-accent-300)">{{ adminPreview }}</div>
+              <div style="font:400 11px var(--font-body);color:var(--color-neutral-500);margin-top:4px">{{ revisedLine }}</div>
+
+              <div class="rc-sec">Raw material &amp; cost heads · Rs/Kg</div>
+              <div class="rc-card" style="padding:4px 14px 8px">
+                <sc-for list="{{ adminCosts }}" as="c" hint-placeholder-count="6">
+                  <div style="display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid rgba(233,233,237,.07)">
+                    <div style="flex:1;min-width:0;font:400 13px var(--font-body);color:var(--color-text)">{{ c.label }}</div>
+                    <input class="rc-in" style="width:84px;text-align:right;padding:8px 10px;font-size:14px" value="{{ c.value }}" onChange="{{ c.onChange }}" inputMode="decimal">
+                  </div>
+                </sc-for>
+              </div>
+
+              <div class="rc-sec">Calculation factors</div>
+              <div class="rc-card" style="padding:4px 14px 8px">
+                <sc-for list="{{ adminFactors }}" as="f" hint-placeholder-count="2">
+                  <div style="display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid rgba(233,233,237,.07)">
+                    <div style="flex:1;min-width:0">
+                      <div style="font:400 13px var(--font-body);color:var(--color-text)">{{ f.label }}</div>
+                      <div style="font:400 11px var(--font-body);color:var(--color-neutral-600)">{{ f.unit }}</div>
+                    </div>
+                    <input class="rc-in" style="width:84px;text-align:right;padding:8px 10px;font-size:14px" value="{{ f.value }}" onChange="{{ f.onChange }}" inputMode="decimal">
+                  </div>
+                </sc-for>
+              </div>
+
+              <div class="rc-sec">Unit weights · kg/sqm</div>
+              <div class="rc-card" style="padding:8px 14px 8px">
+                <div style="display:flex;gap:8px;font:500 10px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-500);padding:4px 0 6px">
+                  <span style="flex:1">Spec</span><span style="width:64px;text-align:center">Mesh</span><span style="width:64px;text-align:center">Box</span>
+                </div>
+                <sc-for list="{{ adminSpecs }}" as="sp" hint-placeholder-count="9">
+                  <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid rgba(233,233,237,.07)">
+                    <div style="flex:1;min-width:0;font:400 12px/1.35 var(--font-body);color:var(--color-neutral-300)">{{ sp.label }}</div>
+                    <input class="rc-in" style="width:64px;text-align:center;padding:7px 4px;font-size:13px" value="{{ sp.mesh }}" onChange="{{ sp.setMesh }}" inputMode="decimal">
+                    <input class="rc-in" style="width:64px;text-align:center;padding:7px 4px;font-size:13px" value="{{ sp.box }}" onChange="{{ sp.setBoxW }}" inputMode="decimal">
+                  </div>
+                </sc-for>
+              </div>
+
+              <div class="rc-sec">Admin PIN</div>
+              <div class="rc-card" style="display:flex;gap:10px;align-items:center">
+                <input class="rc-in" type="password" value="{{ newPin }}" onChange="{{ setNewPin }}" inputMode="numeric" placeholder="New PIN" style="flex:1">
+                <div class="rc-tap" onClick="{{ changePin }}" style="flex:none;border:1px solid var(--color-neutral-700);color:var(--color-neutral-300);border-radius:var(--radius-md);padding:11px 14px;font:500 13px var(--font-body)">{{ pinChangeLabel }}</div>
+              </div>
+
+              <div style="margin-top:22px;display:flex;flex-direction:column;gap:10px">
+                <div class="rc-tap" onClick="{{ saveRates }}" style="border:1px solid var(--color-accent);color:var(--color-accent-200);border-radius:var(--radius-md);padding:14px;text-align:center;font:500 15px var(--font-body);background:rgba(145,132,217,.08)">{{ ratesSaveLabel }}</div>
+                <div style="display:flex;gap:10px">
+                  <div class="rc-tap" onClick="{{ resetRates }}" style="flex:1;border:1px solid var(--color-neutral-700);color:var(--color-neutral-300);border-radius:var(--radius-md);padding:12px;text-align:center;font:500 13px var(--font-body)">Reset to sheet values</div>
+                  <div class="rc-tap" onClick="{{ lock }}" style="flex:1;border:1px solid var(--color-neutral-700);color:var(--color-neutral-300);border-radius:var(--radius-md);padding:12px;text-align:center;font:500 13px var(--font-body)">Lock &amp; exit</div>
+                </div>
+                <div style="text-align:center;font:400 11px/1.6 var(--font-body);color:var(--color-neutral-600)">Saved rates apply to every new quote on this phone. Sales never sees these values.</div>
+              </div>
+            </div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ isZoho }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:4px 18px 40px">
+            <div class="rc-card">
+              <label class="rc-lbl">Zoho Flow webhook URL</label>
+              <input class="rc-in" value="{{ zohoUrl }}" onChange="{{ setZohoUrl }}" placeholder="https://flow.zoho.in/…/webhook/…" inputMode="url">
+              <div style="font:400 11px/1.5 var(--font-body);color:{{ zohoStatusColor }};margin-top:8px">{{ zohoStatus }}</div>
+              <div style="display:flex;gap:9px;margin-top:12px">
+                <div class="rc-tap" onClick="{{ testZoho }}" style="flex:1;text-align:center;border:1px solid var(--color-accent);color:var(--color-accent-200);border-radius:var(--radius-md);padding:11px;font:500 13px var(--font-body)">Send test row</div>
+                <div class="rc-tap" onClick="{{ syncPending }}" style="flex:1;text-align:center;border:1px solid var(--color-neutral-700);color:var(--color-neutral-300);border-radius:var(--radius-md);padding:11px;font:500 13px var(--font-body)">{{ pendingLabel }}</div>
+              </div>
+            </div>
+
+            <div class="rc-sec">One-time setup in Zoho</div>
+            <div class="rc-card" style="padding:6px 14px 12px">
+              <sc-for list="{{ zohoSteps }}" as="z" hint-placeholder-count="5">
+                <div style="display:flex;gap:11px;padding:10px 0;border-bottom:1px solid rgba(233,233,237,.07)">
+                  <span style="font:500 11px ui-monospace,Menlo,monospace;color:var(--color-accent-400);padding-top:2px">{{ z.n }}</span>
+                  <span style="font:400 13px/1.5 var(--font-body);color:var(--color-neutral-300)">{{ z.t }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div class="rc-sec">Columns sent per lead</div>
+            <div class="rc-card">
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ zohoCols }}" as="c" hint-placeholder-count="12">
+                  <span style="font:500 11px var(--font-body);color:var(--color-neutral-300);border:1px solid var(--color-neutral-800);border-radius:99px;padding:4px 9px">{{ c }}</span>
+                </sc-for>
+              </div>
+              <div style="font:400 11px/1.5 var(--font-body);color:var(--color-neutral-600);margin-top:12px">Use these as headers from M1 across. Raw material rates are never sent.</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:4px 18px 44px">
+            <div class="rc-tap" onClick="{{ goRates }}" style="border:1px solid {{ remindBorder }};border-radius:var(--radius-lg);padding:13px 14px;margin-bottom:14px;background:{{ remindBg }}">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:30px;height:30px;flex:none;border-radius:8px;border:1px solid var(--color-neutral-700);display:flex;align-items:center;justify-content:center;color:var(--color-accent-300);font:500 13px var(--font-body)">₹</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font:500 14px var(--font-heading);color:var(--color-text)">Rates &amp; factors</div>
+                  <div style="font:400 12px var(--font-body);color:var(--color-neutral-500)">{{ revisedLine }}</div>
+                </div>
+                <div style="font:400 18px var(--font-body);color:var(--color-neutral-600)">›</div>
+              </div>
+              <sc-if value="{{ remindOn }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:center;gap:8px;margin-top:11px;padding-top:10px;border-top:1px solid rgba(145,132,217,.25)">
+                  <div style="width:7px;height:7px;flex:none;border-radius:50%;background:var(--color-accent-300);box-shadow:0 0 0 4px rgba(145,132,217,.2)"></div>
+                  <div style="flex:1;font:500 12px/1.45 var(--font-body);color:var(--color-accent-200)">{{ remindText }}</div>
+                </div>
+              </sc-if>
+            </div>
+            <div class="rc-tap" onClick="{{ newQuote }}" style="border:1px solid var(--color-accent);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:center;gap:12px;background:rgba(145,132,217,.06)">
+              <div style="width:38px;height:38px;border-radius:50%;border:1px solid var(--color-accent-600);display:flex;align-items:center;justify-content:center;color:var(--color-accent-300);font:400 22px var(--font-body)">+</div>
+              <div>
+                <div style="font:500 15px var(--font-heading);color:var(--color-text)">New quote</div>
+                <div style="font:400 12px var(--font-body);color:var(--color-neutral-500)">Customer details first — mandatory</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:14px">
+              <div style="flex:1;background:var(--color-surface);border-radius:var(--radius-md);padding:12px;box-shadow:var(--shadow-sm)">
+                <div style="font:500 10px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-500)">This month</div>
+                <div style="font:500 22px var(--font-heading);color:var(--color-text);margin-top:5px">{{ statQuotes }}</div>
+                <div style="font:400 11px var(--font-body);color:var(--color-neutral-600)">quotes issued</div>
+              </div>
+              <div style="flex:1;background:var(--color-surface);border-radius:var(--radius-md);padding:12px;box-shadow:var(--shadow-sm)">
+                <div style="font:500 10px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-500)">Value quoted</div>
+                <div style="font:500 22px var(--font-heading);color:var(--color-accent-300);margin-top:5px">{{ statRate }}</div>
+                <div style="font:400 11px var(--font-body);color:var(--color-neutral-600)">across open quotes</div>
+              </div>
+            </div>
+
+            <div class="rc-tap rc-card" onClick="{{ goZoho }}" style="margin-top:14px;display:flex;align-items:center;gap:12px;padding:13px 14px">
+              <div style="width:9px;height:9px;flex:none;border-radius:50%;background:{{ zohoDot }};box-shadow:0 0 0 4px {{ zohoHalo }}"></div>
+              <div style="flex:1;min-width:0">
+                <div style="font:500 14px var(--font-heading);color:var(--color-text)">Zoho Sheet — leads &amp; customers</div>
+                <div style="font:400 12px var(--font-body);color:var(--color-neutral-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ zohoHomeNote }}</div>
+              </div>
+              <div style="font:400 18px var(--font-body);color:var(--color-neutral-600)">›</div>
+            </div>
+
+            <div class="rc-sec">Recent quotes</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ recent }}" as="q" hint-placeholder-count="3">
+                <div class="rc-tap rc-card" onClick="{{ q.open }}" style="padding:13px 14px">
+                  <div style="display:flex;align-items:baseline;gap:8px">
+                    <div style="font:500 14px var(--font-heading);color:var(--color-text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ q.company }}</div>
+                    <div style="font:500 15px var(--font-heading);color:var(--color-accent-300);white-space:nowrap">{{ q.rate }}</div>
+                  </div>
+                  <div style="font:400 12px var(--font-body);color:var(--color-neutral-500);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ q.spec }}</div>
+                  <div style="display:flex;gap:8px;align-items:center;margin-top:9px">
+                    <span style="font:500 10px var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-300);border:1px solid var(--color-accent-700);border-radius:99px;padding:3px 8px">{{ q.mode }}</span>
+                    <span style="font:400 11px var(--font-body);color:var(--color-neutral-600);flex:1">{{ q.meta }}</span>
+                    <span style="font:500 10px var(--font-body);color:{{ q.syncColor }}">{{ q.syncLabel }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isCustomer }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:4px 18px 130px">
+            <div style="display:flex;gap:9px;align-items:flex-start;border-left:2px solid var(--color-accent);background:rgba(145,132,217,.08);border-radius:0 var(--radius-md) var(--radius-md) 0;padding:11px 12px;margin-bottom:18px">
+              <div style="font:500 12px/1.5 var(--font-body);color:var(--color-accent-200)">Name, phone and location are mandatory <span class="rc-star">*</span> — no rate is issued without them. Everything captured here is carried into the Excel export.</div>
+            </div>
+            <div style="font:500 11px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-300);margin:0 0 12px">Essential</div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <sc-for list="{{ custEssential }}" as="f" hint-placeholder-count="3">
+                <div>
+                  <label class="rc-lbl">{{ f.label }} <span style="color:{{ f.starColor }};text-transform:none;letter-spacing:0">{{ f.star }}</span></label>
+                  <input class="{{ f.cls }}" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.ph }}" inputMode="{{ f.mode }}">
+                  <div style="font:400 11px var(--font-body);color:var(--color-accent-400);margin-top:5px">{{ f.error }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ hasMatch }}" hint-placeholder-val="{{ false }}">
+              <div class="rc-tap" onClick="{{ fillMatch }}" style="margin-top:14px;border:1px solid var(--color-accent-700);border-radius:var(--radius-md);padding:11px 12px;background:rgba(145,132,217,.06)">
+                <div style="font:500 10px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-300)">Existing customer</div>
+                <div style="font:500 13px var(--font-body);color:var(--color-text);margin-top:4px">{{ matchLine }}</div>
+                <div style="font:400 11px var(--font-body);color:var(--color-neutral-500);margin-top:2px">{{ matchNote }}</div>
+              </div>
+            </sc-if>
+            <div style="height:1px;background:linear-gradient(90deg,transparent,var(--color-neutral-800) 20%,var(--color-neutral-800) 80%,transparent);margin:26px 0 16px"></div>
+            <div style="font:500 11px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--color-neutral-500);margin:0 0 12px">Good to have</div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <sc-for list="{{ custOptional }}" as="f" hint-placeholder-count="3">
+                <div>
+                  <label class="rc-lbl">{{ f.label }} <span style="color:{{ f.starColor }};text-transform:none;letter-spacing:0">{{ f.star }}</span></label>
+                  <input class="{{ f.cls }}" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.ph }}" inputMode="{{ f.mode }}">
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="position:sticky;bottom:0;left:0;right:0;padding:12px 18px 26px;background:linear-gradient(180deg,rgba(22,24,38,0) 0%,var(--color-bg) 38%)">
+            <div class="rc-tap" onClick="{{ submitCustomer }}" style="border:1px solid {{ contBorder }};color:{{ contColor }};border-radius:var(--radius-md);padding:14px;text-align:center;font:500 15px var(--font-body);background:rgba(145,132,217,.06)">Continue to calculator</div>
+            <div style="text-align:center;font:400 11px var(--font-body);color:var(--color-neutral-600);margin-top:8px">{{ contHint }}</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isCalc }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:4px 18px 26px">
+
+            <div style="display:flex;background:#1b1d2b;border:1px solid var(--color-neutral-800);border-radius:var(--radius-md);padding:3px;gap:3px">
+              <div class="rc-tap" onClick="{{ setBox }}" style="flex:1;text-align:center;padding:9px;border-radius:6px;font:500 13px var(--font-body);background:{{ boxTabBg }};color:{{ boxTabColor }}">Rate per Box</div>
+              <div class="rc-tap" onClick="{{ setMesh }}" style="flex:1;text-align:center;padding:9px;border-radius:6px;font:500 13px var(--font-body);background:{{ meshTabBg }};color:{{ meshTabColor }}">Mesh per SQM</div>
+            </div>
+
+            <div class="rc-sec">Product options</div>
+            <div class="rc-card" style="padding:4px 14px 10px">
+              <sc-for list="{{ costRows }}" as="c" hint-placeholder-count="4">
+                <div class="rc-tap" onClick="{{ c.toggle }}" style="display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid rgba(233,233,237,.07)">
+                  <div style="width:22px;height:22px;flex:none;border-radius:6px;border:1px solid {{ c.boxBorder }};background:{{ c.boxBg }};color:var(--color-accent-200);display:flex;align-items:center;justify-content:center;font:500 13px var(--font-body)">{{ c.tick }}</div>
+                  <div style="flex:1;min-width:0">
+                    <div style="font:400 13px var(--font-body);color:{{ c.labelColor }}">{{ c.label }}</div>
+                    <div style="font:400 11px var(--font-body);color:var(--color-neutral-600)">{{ c.note }}</div>
+                  </div>
+                </div>
+              </sc-for>
+              <div style="font:400 11px/1.5 var(--font-body);color:var(--color-neutral-600);padding:12px 0 4px">{{ unitRateNote }}</div>
+            </div>
+
+            <sc-if value="{{ isBoxMode }}" hint-placeholder-val="{{ true }}">
+              <div class="rc-sec">Box size · metres</div>
+              <div class="rc-card">
+                <div style="display:flex;gap:10px">
+                  <sc-for list="{{ dimFields }}" as="d" hint-placeholder-count="3">
+                    <div style="flex:1">
+                      <label class="rc-lbl">{{ d.label }}</label>
+                      <input class="rc-in" style="text-align:center" value="{{ d.value }}" onChange="{{ d.onChange }}" inputMode="decimal">
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px">
+                  <sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
+                    <div class="rc-tap" onClick="{{ p.apply }}" style="border:1px solid {{ p.border }};color:{{ p.color }};border-radius:99px;padding:6px 11px;font:500 12px var(--font-body)">{{ p.label }}</div>
+                  </sc-for>
+                </div>
+                <div style="margin-top:6px">
+                  <sc-for list="{{ optionRows }}" as="o" hint-placeholder-count="4">
+                    <div class="rc-tap" onClick="{{ o.toggle }}" style="display:flex;align-items:center;gap:11px;padding:11px 0;border-top:1px solid rgba(233,233,237,.07)">
+                      <div style="width:22px;height:22px;flex:none;border-radius:6px;border:1px solid {{ o.boxBorder }};background:{{ o.boxBg }};color:var(--color-accent-200);display:flex;align-items:center;justify-content:center;font:500 13px var(--font-body)">{{ o.tick }}</div>
+                      <div style="flex:1;min-width:0">
+                        <div style="font:400 13px var(--font-body);color:{{ o.labelColor }}">{{ o.label }}</div>
+                        <div style="font:400 11px var(--font-body);color:var(--color-neutral-600)">{{ o.note }}</div>
+                      </div>
+                      <div style="font:500 13px var(--font-body);color:var(--color-neutral-400)">{{ o.value }}</div>
+                    </div>
+                  </sc-for>
+                  <sc-if value="{{ tail }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;align-items:center;gap:11px;padding:2px 0 12px 33px">
+                      <label class="rc-lbl" style="margin:0;flex:1">Tail length — m</label>
+                      <input class="rc-in rc-req" style="width:92px;text-align:center;padding:8px 10px;font-size:14px" value="{{ tailN }}" onChange="{{ setTailN }}" inputMode="decimal" autoFocus="{{ true }}">
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isMeshMode }}" hint-placeholder-val="{{ false }}">
+              <div class="rc-sec">Mesh roll</div>
+              <div class="rc-card">
+                <div style="display:flex;gap:10px">
+                  <sc-for list="{{ rollFields }}" as="r" hint-placeholder-count="3">
+                    <div style="flex:1">
+                      <label class="rc-lbl">{{ r.label }}</label>
+                      <input class="rc-in" style="text-align:center" value="{{ r.value }}" onChange="{{ r.onChange }}" inputMode="decimal">
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:14px;font:400 12px var(--font-body);color:var(--color-neutral-500)">
+                  <span>Area per roll</span><span style="color:var(--color-text)">{{ areaPerRollTxt }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:7px;font:400 12px var(--font-body);color:var(--color-neutral-500)">
+                  <span>Total area</span><span style="color:var(--color-text)">{{ totalAreaTxt }}</span>
+                </div>
+              </div>
+            </sc-if>
+
+            <div class="rc-sec">Material specification</div>
+            <div class="rc-card">
+              <label class="rc-lbl">Wire spec — mm</label>
+              <select class="rc-in" value="{{ specIndex }}" onChange="{{ setSpec }}">
+                <sc-for list="{{ specOptions }}" as="s" hint-placeholder-count="9">
+                  <option value="{{ s.i }}">{{ s.label }}</option>
+                </sc-for>
+              </select>
+              <div style="display:flex;justify-content:space-between;margin-top:13px;font:400 12px var(--font-body);color:var(--color-neutral-500)">
+                <span>Unit weight ({{ unitWtSource }})</span><span style="color:var(--color-text)">{{ unitWtTxt }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:7px;font:400 12px var(--font-body);color:var(--color-neutral-500)">
+                <span>{{ areaLabel }}</span><span style="color:var(--color-text)">{{ areaTxt }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:7px;font:400 12px var(--font-body);color:var(--color-neutral-500)">
+                <span>{{ weightLabel }}</span><span style="color:var(--color-text)">{{ weightTxt }}</span>
+              </div>
+            </div>
+
+            <div class="rc-sec">Order &amp; extras</div>
+            <div class="rc-card">
+              <div style="display:flex;gap:10px">
+                <div style="flex:1">
+                  <label class="rc-lbl">{{ qtyLabel }}</label>
+                  <input class="rc-in" value="{{ qty }}" onChange="{{ setQty }}" inputMode="numeric">
+                </div>
+                <div style="flex:1">
+                  <label class="rc-lbl">Freight — total Rs</label>
+                  <input class="rc-in" value="{{ freight }}" onChange="{{ setFreight }}" inputMode="numeric">
+                </div>
+              </div>
+              <div style="margin-top:13px;border:1px solid {{ freightBorder }};border-radius:var(--radius-md);padding:11px 12px;background:rgba(145,132,217,.05)">
+                <div style="display:flex;align-items:baseline;gap:10px">
+                  <div style="flex:1;min-width:0;font:500 12px var(--font-body);color:{{ freightColor }}">{{ freightHead }}</div>
+                  <div style="font:500 15px var(--font-heading);color:{{ freightColor }};white-space:nowrap">{{ freightValue }}</div>
+                </div>
+                <div style="font:400 11px/1.5 var(--font-body);color:var(--color-neutral-600);margin-top:4px">{{ freightNote }}</div>
+              </div>
+              <div class="rc-tap" onClick="{{ toggleLacing }}" style="display:flex;align-items:center;gap:11px;padding:13px 0 4px;margin-top:6px;border-top:1px solid rgba(233,233,237,.07)">
+                <div style="width:22px;height:22px;flex:none;border-radius:6px;border:1px solid {{ lacingBorder }};background:{{ lacingBg }};color:var(--color-accent-200);display:flex;align-items:center;justify-content:center;font:500 13px var(--font-body)">{{ lacingTick }}</div>
+                <div style="flex:1">
+                  <div style="font:400 13px var(--font-body);color:{{ lacingLabelColor }}">{{ lacingTitle }}</div>
+                  <div style="font:400 11px var(--font-body);color:var(--color-neutral-600)">{{ lacingNote }}</div>
+                </div>
+                <div style="font:500 13px var(--font-body);color:var(--color-neutral-400)">{{ lacingAmtTxt }}</div>
+              </div>
+            </div>
+
+            <div class="rc-sec">Order roll-up</div>
+            <div class="rc-card" style="padding:6px 14px 12px">
+              <sc-for list="{{ rollup }}" as="r" hint-placeholder-count="4">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid rgba(233,233,237,.07)">
+                  <span style="font:400 13px var(--font-body);color:var(--color-neutral-400)">{{ r.label }}</span>
+                  <span style="font:500 14px var(--font-body);color:var(--color-text)">{{ r.value }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="position:sticky;bottom:0;left:0;right:0;padding:10px 14px 22px;background:linear-gradient(180deg,rgba(22,24,38,0) 0%,rgba(22,24,38,.92) 30%,var(--color-bg) 60%)">
+            <div style="background:var(--color-surface);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:12px 14px;display:flex;align-items:center;gap:12px">
+              <div style="min-width:0;flex:1">
+                <div style="font:500 10px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-500)">{{ heroLabel }}</div>
+                <div style="display:flex;gap:14px;align-items:baseline;margin-top:2px">
+                  <div>
+                    <div style="font:500 9px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-500)">Min.</div>
+                    <div style="font:500 21px/1.15 var(--font-heading);color:var(--color-text)">{{ heroMin }}</div>
+                  </div>
+                  <div style="width:1px;align-self:stretch;background:var(--color-neutral-800)"></div>
+                  <div>
+                    <div style="font:500 9px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-300)">Max.</div>
+                    <div style="font:500 21px/1.15 var(--font-heading);color:var(--color-accent-300)">{{ heroValue }}</div>
+                  </div>
+                </div>
+                <div style="font:400 11px var(--font-body);color:var(--color-neutral-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ heroNote }}</div>
+              </div>
+              <div class="rc-tap" onClick="{{ goSummary }}" style="flex:none;border:1px solid var(--color-accent);color:var(--color-accent-200);border-radius:var(--radius-md);padding:12px 15px;font:500 14px var(--font-body);background:rgba(145,132,217,.08)">Quote →</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isSummary }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:4px 18px 34px">
+            <div style="border-radius:var(--radius-lg);background:linear-gradient(160deg,#262a60 0%,#1e2140 70%);padding:18px;box-shadow:var(--shadow-md)">
+              <div style="font:500 10px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-300)">{{ heroLabel }}</div>
+              <div style="display:flex;gap:18px;margin-top:10px">
+                <div style="flex:1">
+                  <div style="font:500 10px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-400)">Min. rate</div>
+                  <div style="font:500 32px/1.1 var(--font-heading);color:var(--color-text);margin-top:4px;letter-spacing:-.02em">{{ heroMin }}</div>
+                  <div style="font:400 11px var(--font-body);color:var(--color-neutral-400);margin-top:3px">{{ heroMinNote }}</div>
+                </div>
+                <div style="width:1px;background:rgba(233,233,237,.18)"></div>
+                <div style="flex:1">
+                  <div style="font:500 10px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-200)">Max. rate</div>
+                  <div style="font:500 32px/1.1 var(--font-heading);color:var(--color-accent-200);margin-top:4px;letter-spacing:-.02em">{{ heroValue }}</div>
+                  <div style="font:400 11px var(--font-body);color:var(--color-neutral-400);margin-top:3px">{{ heroMaxNote }}</div>
+                </div>
+              </div>
+              <div style="font:400 12px var(--font-body);color:var(--color-accent-200);margin-top:6px">{{ heroNote }}</div>
+              <div style="height:1px;background:linear-gradient(90deg,rgba(233,233,237,.25),transparent);margin:14px 0 12px"></div>
+              <div style="font:400 12px/1.6 var(--font-body);color:var(--color-neutral-300)">{{ custLine }}</div>
+            </div>
+
+            <div class="rc-sec">Quote text</div>
+            <div class="rc-card">
+              <div style="font:400 13px/1.7 var(--font-body);color:var(--color-neutral-200);white-space:pre-wrap">{{ quoteText }}</div>
+              <div style="display:flex;gap:9px;margin-top:14px">
+                <div class="rc-tap" onClick="{{ copyQuote }}" style="flex:1;text-align:center;border:1px solid var(--color-accent);color:var(--color-accent-200);border-radius:var(--radius-md);padding:11px;font:500 13px var(--font-body)">{{ copyLabel }}</div>
+                <div class="rc-tap" onClick="{{ shareQuote }}" style="flex:1;text-align:center;border:1px solid var(--color-neutral-700);color:var(--color-neutral-300);border-radius:var(--radius-md);padding:11px;font:500 13px var(--font-body)">{{ shareLabel }}</div>
+              </div>
+            </div>
+
+            <div class="rc-sec">Breakdown</div>
+            <div class="rc-card" style="padding:6px 14px 12px">
+              <sc-for list="{{ summaryRows }}" as="r" hint-placeholder-count="8">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid rgba(233,233,237,.07)">
+                  <span style="font:400 12px var(--font-body);color:var(--color-neutral-500)">{{ r.label }}</span>
+                  <span style="font:500 13px var(--font-body);color:var(--color-text);text-align:right;max-width:62%">{{ r.value }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div class="rc-sec">Transporter message</div>
+            <div class="rc-card">
+              <div style="font:400 12px/1.7 var(--font-body);color:var(--color-neutral-300);white-space:pre-wrap">{{ transportText }}</div>
+            </div>
+
+            <div style="margin-top:22px;display:flex;flex-direction:column;gap:10px">
+              <div class="rc-tap" onClick="{{ exportExcel }}" style="border:1px solid var(--color-accent);color:var(--color-accent-200);border-radius:var(--radius-md);padding:14px;text-align:center;font:500 15px var(--font-body);background:rgba(145,132,217,.08)">{{ exportLabel }}</div>
+              <div class="rc-tap" onClick="{{ saveQuote }}" style="border:1px solid var(--color-neutral-700);color:var(--color-neutral-300);border-radius:var(--radius-md);padding:13px;text-align:center;font:500 14px var(--font-body)">{{ saveLabel }}</div>
+              <div style="text-align:center;font:400 11px/1.6 var(--font-body);color:{{ saveNoteColor }}">{{ saveNote }}</div>
+              <div style="text-align:center;font:400 11px/1.6 var(--font-body);color:var(--color-neutral-600);margin-top:2px">Excel export carries customer details, every input and the calculated result on one sheet.</div>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </x-import>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1080,&quot;height&quot;:1000}}">
+const SPECS = [
+  { label: "GI + PVC 2.7/3.7; 3.4/4.4; 2.2/3.2 (A)", mesh: 1.48, box: 1.53 },
+  { label: "GI + PVC 2.7/3.7; 3.4/4.4; 2.2/3.2 (B)", mesh: 1.45, box: 1.48 },
+  { label: "GI + PVC 2.6/3.6; 3.15/4.15; 2.0/3.0", mesh: 1.35, box: 1.46 },
+  { label: "GI + PVC 2.5/3.5; 3.15/4.15; 2.0/3.0", mesh: 1.24, box: 1.36 },
+  { label: "GI 2.7; 3.4; 2.2", mesh: 1.20, box: 1.35 },
+  { label: "GI 2.6; 3.15; 2.15", mesh: 1.20, box: 1.36 },
+  { label: "GI 2.50; 3.15; 2.0", mesh: 1.10, box: 1.265 },
+  { label: "GI 2.20; 3.15; 2.0", mesh: 0.92, box: 0.92 },
+  { label: "GI 4.0; 4.0; 2.0 (big mesh box)", mesh: 3.0, box: 3.0 }
+];
+const COSTS = [
+  { key: "gi", label: "Raw material — commercial GI", internal: true },
+  { key: "prod", label: "Mesh production cost", internal: true },
+  { key: "heavy", label: "Heavy zinc coating", note: "otherwise commercial zinc" },
+  { key: "pvc", label: "PVC coating", note: "GI + PVC specification" },
+  { key: "boxMaking", label: "Box making", note: "assembled box, not plain mesh" },
+  { key: "margin", label: "Risk & margin", internal: true }
+];
+const OPTIONS = COSTS.filter(r => !r.internal);
+const CUST = [
+  { key: "person", label: "Name", req: true, ph: "Hitesh Kalra", mode: "text", group: "Essential" },
+  { key: "phone", label: "Phone no.", req: true, ph: "98xxxxxxxx", mode: "tel" },
+  { key: "location", label: "Location", req: true, ph: "Mandi, Himachal Pradesh", mode: "text" },
+  { key: "company", label: "Company name", req: false, ph: "Terrafirm Infra Pvt. Ltd.", mode: "text", group: "Good to have" },
+  { key: "email", label: "Email ID", req: false, ph: "name@company.com", mode: "email" },
+  { key: "gst", label: "GST no.", req: false, ph: "05AABCT1234M1Z9", mode: "text" },
+  { key: "delivery", label: "Delivery location & pin code", req: false, ph: "Guwahati, Assam — 781001", mode: "text" }
+];
+
+class Component extends DCLogic {
+  state = {
+    screen: "home",
+    touched: false,
+    cust: { company: "", person: "", phone: "", email: "", gst: "", location: "", delivery: "" },
+    mode: "box",
+    costs: { gi: 66, prod: 12, heavy: 18, pvc: 10, boxMaking: 3, margin: 3 },
+    on: { gi: true, prod: true, heavy: false, pvc: true, boxMaking: true, margin: true },
+    dims: { L: 3, B: 2, H: 0.6 },
+    tail: false, tailN: 3, diaph: true, tdiaph: true,
+    roll: { len: 30, wid: 1.8, nos: 34 },
+    spec: 0, lacing: false, qty: 1000, freight: 0,
+    copied: false, shared: false, saved: false, exported: false, zohoUrl: "", zohoTest: "",
+    specs: SPECS.map(x => ({ ...x })), lacingPct: 2.5, volDiv: 135,
+    pin: "1234", pinEntry: "", pinErr: false, unlocked: false, ratesSaved: false, newPin: "", revisedAt: 0, minMargin: 1,
+    saves: [
+      { company: "Konkan Coastal Works", spec: "GI + PVC 2.7/3.7 · 3×2×0.6 m", rate: "₹3,193", mode: "Box", meta: "1000 nos · 12 Aug" },
+      { company: "NHPC Mandi Division", spec: "GI 2.50; 3.15; 2.0 · 3×1×1 m", rate: "₹1,488", mode: "Box", meta: "200 nos · 09 Aug" },
+      { company: "Brahmaputra Embankment", spec: "GI + PVC 2.6/3.6 · roll 30×1.8 m", rate: "₹128/SQM", mode: "Mesh", meta: "34 rolls · 04 Aug" }
+    ]
+  };
+
+  n(v) { const x = parseFloat(v); return isFinite(x) ? x : 0; }
+  set(path, v) { this.setState(s => { const o = { ...s[path[0]] }; o[path[1]] = v; return { [path[0]]: o, copied: false, saved: false, exported: false }; }); }
+  fmt(v, d) { return (Math.round(v * Math.pow(10, d)) / Math.pow(10, d)).toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  rupee(v) { return "₹" + Math.round(v).toLocaleString("en-IN"); }
+
+  calc(m) {
+    const s = this.state;
+    const maxM = Math.max(3, this.n(s.costs.margin));
+    const c = { ...s.costs, margin: m == null ? maxM : m };
+    const isBox = s.mode === "box";
+    const boxMakingOn = isBox && s.on.boxMaking;
+    let sum = 0;
+    COSTS.forEach(r => { if (r.key === "margin" || (r.key === "boxMaking" ? boxMakingOn : s.on[r.key])) sum += this.n(c[r.key]); });
+    const unitRate = Math.max(sum, this.n(c.gi) + this.n(c.prod));
+    const L = this.n(s.dims.L), B = this.n(s.dims.B), H = this.n(s.dims.H);
+    const tailArea = s.tail ? L * this.n(s.tailN) : 0;
+    const base = 2 * (L * B + B * H + L * H) + tailArea;
+    const diaN = Math.max(0, Math.round(L - 1));
+    const tdiaN = Math.max(0, Math.round(B - 1));
+    const dia = s.diaph ? diaN * (B * H) : 0;
+    const tdia = s.tdiaph ? tdiaN * L * H : 0;
+    const boxArea = base + dia + tdia;
+    const areaPerRoll = this.n(s.roll.len) * this.n(s.roll.wid);
+    const rollTotalArea = areaPerRoll * this.n(s.roll.nos);
+    const spec = s.specs[s.spec] || SPECS[0];
+    const unitWt = boxMakingOn ? spec.box : spec.mesh;
+    const area = isBox ? boxArea : areaPerRoll;
+    const weight = area * unitWt;
+    const lp = this.n(s.lacingPct) / 100;
+    const lacingAmt = weight * lp * (unitRate - this.n(c.prod));
+    const unitPrice = Math.round(unitRate * weight + (s.lacing ? lacingAmt : 0));
+    const qty = this.n(s.qty) || 1;
+    const totalArea = isBox ? boxArea * qty : rollTotalArea;
+    const ratePerSqm = unitRate * unitWt + (s.lacing ? unitWt * lp * (unitRate - this.n(c.prod)) : 0);
+    const volume = totalArea / (this.n(s.volDiv) || 135);
+    const weightMT = (isBox ? weight * qty : unitWt * totalArea) / 1000;
+    const orderValue = isBox ? unitPrice * qty : ratePerSqm * totalArea;
+    const forRate = Math.round(unitPrice + this.n(s.freight) / qty);
+    const min = m == null ? this.calc(this.n(s.minMargin)) : null;
+    return { min, margin: c.margin, diaN, tdiaN, boxMakingOn, unitRate, base, dia, tdia, tailArea, boxArea, areaPerRoll, rollTotalArea, spec, isBox, unitWt, area, weight, lacingAmt, unitPrice, qty, totalArea, ratePerSqm, volume, weightMT, orderValue, forRate };
+  }
+
+  componentDidMount() {
+    try {
+      const url = localStorage.getItem("rc-zoho-url") || "";
+      const saves = JSON.parse(localStorage.getItem("rc-leads") || "null");
+      const r = JSON.parse(localStorage.getItem("rc-rates") || "null");
+      if (r) this.setState({ costs: r.costs || this.state.costs, specs: r.specs || this.state.specs, lacingPct: r.lacingPct ?? 2.5, volDiv: r.volDiv ?? 135, pin: r.pin || "1234", revisedAt: r.revisedAt || 0, minMargin: r.minMargin ?? 1 });
+      this.setState(st => ({ zohoUrl: url, saves: Array.isArray(saves) && saves.length ? saves : st.saves }));
+    } catch (e) {}
+  }
+
+  persist(saves) { try { localStorage.setItem("rc-leads", JSON.stringify(saves.slice(0, 200))); } catch (e) {} }
+
+  leadRow(k) {
+    const s = this.state, fr = this.n(s.freight);
+    const rateFr = k.isBox ? k.forRate : k.ratePerSqm + fr / (k.totalArea || 1);
+    return {
+      "Date": new Date().toLocaleString("en-IN"),
+      "Name": s.cust.person, "Phone": s.cust.phone, "Location": s.cust.location,
+      "Company": s.cust.company, "Email": s.cust.email, "GST": s.cust.gst, "Delivery": s.cust.delivery,
+      "Product": k.isBox ? "Gabion Box" : "Mesh Roll",
+      "Spec": k.spec.label,
+      "Size": k.isBox ? s.dims.L + "x" + s.dims.B + "x" + s.dims.H + " m" : s.roll.len + "x" + s.roll.wid + " m",
+      "Qty": k.isBox ? s.qty : s.roll.nos,
+      "Coating": (s.on.heavy ? "Heavy zinc" : "Commercial zinc") + (s.on.pvc ? " + PVC" : ""),
+      "Diaphragm": k.isBox && s.diaph ? k.diaN : 0,
+      "Transverse": k.isBox && s.tdiaph ? k.tdiaN : 0,
+      "Tail (m)": k.isBox && s.tail ? s.tailN : 0,
+      "Lacing": s.lacing ? "Yes" : "No",
+      "Weight (MT)": this.fmt(k.weightMT, 2),
+      "Min Rate": Math.round(k.isBox ? k.min.unitPrice : k.min.ratePerSqm) + (k.isBox ? "/Box" : "/SQM"),
+      "Max Rate": Math.round(k.isBox ? k.unitPrice : k.ratePerSqm) + (k.isBox ? "/Box" : "/SQM"),
+      "Freight": fr > 0 ? fr : "Ex-Factory — buyer's scope",
+      "Rate incl. Freight": fr > 0 ? Math.round(k.isBox ? k.min.forRate : k.min.ratePerSqm + fr / (k.totalArea || 1)) + " – " + Math.round(rateFr) : "",
+      "Order Value": Math.round(k.min.orderValue) + " – " + Math.round(k.orderValue),
+      "Quote": this.quoteText(k).replace(/\n/g, " ")
+    };
+  }
+
+  postRow(row) {
+    const url = (this.state.zohoUrl || "").trim();
+    if (!/^https:\/\//.test(url)) return Promise.reject(new Error("no url"));
+    const body = new URLSearchParams();
+    Object.keys(row).forEach(key => body.append(key, row[key] == null ? "" : String(row[key])));
+    return fetch(url, { method: "POST", mode: "no-cors", body: body });
+  }
+
+  sendLead(id, row) {
+    const mark = sync => this.setState(st => {
+      const saves = st.saves.map(q => q.id === id ? { ...q, sync: sync } : q);
+      this.persist(saves);
+      return { saves: saves };
+    });
+    this.postRow(row).then(() => mark("synced")).catch(() => mark("pending"));
+  }
+
+  toClipboard(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).catch(() => this.legacyCopy(text)); return; }
+    } catch (e) {}
+    this.legacyCopy(text);
+  }
+
+  legacyCopy(text) {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    } catch (e) {}
+  }
+
+  custField(f, showErr) {
+    const v = this.state.cust[f.key];
+    const empty = !String(v || "").trim();
+    return {
+      label: f.label, star: f.req ? "*" : "optional", ph: f.ph, mode: f.mode,
+      starColor: f.req ? "var(--color-accent-400)" : "var(--color-neutral-600)",
+      value: v,
+      cls: "rc-in" + (f.req && empty ? " rc-req" : ""),
+      error: showErr && f.req && empty ? "Required — cannot issue a rate without this" : "",
+      onChange: e => this.set(["cust", f.key], e.target.value)
+    };
+  }
+
+  missing() { return CUST.filter(f => f.req && !String(this.state.cust[f.key] || "").trim()).map(f => f.key); }
+
+  quoteText(k) {
+    const s = this.state, c = s.costs;
+    const coat = s.on.heavy ? "Heavy Zinc Coating" : "Commercial Zinc Coating";
+    const mat = (s.on.gi ? "GI" : "") + (s.on.gi && s.on.pvc ? " + " : "") + (s.on.pvc ? "PVC" : "");
+    if (k.isBox) {
+      return "Gabion Box | " + mat + " | " + coat + " | " + (s.diaph ? "With Diaphragm" : "Without Diaphragm") +
+        " | Size: " + s.dims.L + "x" + s.dims.B + "x" + s.dims.H + " m | Rate: " + this.rupee(k.min.unitPrice) + " – " + this.rupee(k.unitPrice) + "/Box" +
+        (s.lacing ? " | Incl. " + s.lacingPct + "% Lacing Wire" : "") +
+        (this.n(s.freight) > 0
+          ? " | Rate incl. Freight: " + this.rupee(k.min.forRate) + " – " + this.rupee(k.forRate) + "/Box, FOR " + (s.cust.location || s.cust.delivery || "site") + ", Excl. GST"
+          : " | Ex-Factory Haridwar, Excl. GST | Transportation in Buyer's Scope") +
+        "\n— Terracare Products Pvt. Ltd.";
+    }
+    const meshFreight = k.ratePerSqm + this.n(s.freight) / (k.totalArea || 1);
+    const meshFreightMin = k.min.ratePerSqm + this.n(s.freight) / (k.totalArea || 1);
+    return "Gabion Mesh Roll | " + mat + " | " + coat + " | Roll: " + s.roll.len + "m x " + s.roll.wid + "m | " +
+      "Rate: " + this.rupee(k.min.ratePerSqm) + " – " + this.rupee(k.ratePerSqm) + "/SQM (" + this.rupee(k.min.unitPrice) + " – " + this.rupee(k.unitPrice) + "/roll)" +
+      (s.lacing ? " | Incl. " + s.lacingPct + "% Lacing Wire" : "") +
+      (this.n(s.freight) > 0
+        ? " | Rate incl. Freight: " + this.rupee(meshFreightMin) + " – " + this.rupee(meshFreight) + "/SQM, FOR " + (s.cust.location || s.cust.delivery || "site") + ", Excl. GST"
+        : " | Ex-Factory Haridwar, Excl. GST | Transportation in Buyer's Scope") +
+      "\n— Terracare Products Pvt. Ltd.";
+  }
+
+  transportText(k) {
+    const s = this.state;
+    return "🚛 Required truck: " + (k.weightMT > 20 ? "Container Truck 32x8x8" : k.weightMT > 6 ? "Open Body 22ft 25x7.5x8" : "Part Load") +
+      "\n📦 Weight: " + this.fmt(k.weightMT, 2) + " M Tonne" +
+      "\n📐 Volume: " + this.fmt(k.volume, 2) + " Cum / " + this.fmt(k.volume * 35.28, 0) + " Cub.ft" +
+      "\n📍 From: Haridwar, U.K. (249403)" +
+      "\n📍 To: " + (s.cust.location || s.cust.delivery || "—");
+  }
+
+  exportExcel = () => {
+    const k = this.calc(), s = this.state;
+    const rows = [
+      ["RATE CALCULATOR — GABION", ""],
+      ["Generated", new Date().toLocaleString("en-IN")],
+      ["", ""],
+      ["CUSTOMER DETAILS", ""],
+      ...CUST.map(f => [f.label, s.cust[f.key] || ""]),
+      ["", ""],
+      ["PRODUCT OPTIONS", ""],
+      ["Zinc coating", s.on.heavy ? "Heavy zinc" : "Commercial zinc"],
+      ["PVC coating", s.on.pvc ? "Yes" : "No"],
+      ["Box making", k.boxMakingOn ? "Yes" : "No"],
+      ["", ""],
+      ["SPECIFICATION & SIZE", ""],
+      ["Mode", k.isBox ? "Rate per Box" : "Mesh per SQM"],
+      ["Wire spec", k.spec.label],
+      k.isBox ? ["Size (L x B x H, m)", s.dims.L + " x " + s.dims.B + " x " + s.dims.H] : ["Roll (L x W, m) x nos", s.roll.len + " x " + s.roll.wid + " x " + s.roll.nos],
+      ["Diaphragm wall", s.diaph ? "Yes — " + k.diaN + " nos (" + this.fmt(k.dia, 2) + " sqm)" : "No"],
+      ["Transverse diaphragm", s.tdiaph ? "Yes — " + k.tdiaN + " nos (" + this.fmt(k.tdia, 2) + " sqm)" : "No"],
+      ["Tail", s.tail ? "Yes — length " + s.tailN + " m (" + this.fmt(k.tailArea, 2) + " sqm)" : "No"],
+      ["Surface area (sqm)", this.fmt(k.area, 2)],
+      ["Unit weight (kg/sqm)", this.fmt(k.unitWt, 3)],
+      ["Weight per unit (kg)", this.fmt(k.weight, 2)],
+      ["Lacing wire " + s.lacingPct + "%", s.lacing ? "Rs " + this.fmt(k.lacingAmt, 2) : "Not included"],
+      ["", ""],
+      ["RESULT", ""],
+      [k.isBox ? "Min. rate per Box (Rs) — margin Rs " + k.min.margin + "/Kg" : "Min. rate per SQM (Rs) — margin Rs " + k.min.margin + "/Kg", k.isBox ? Math.round(k.min.unitPrice) : Math.round(k.min.ratePerSqm)],
+      [k.isBox ? "Max. rate per Box (Rs) — margin Rs " + k.margin + "/Kg" : "Max. rate per SQM (Rs) — margin Rs " + k.margin + "/Kg", k.isBox ? Math.round(k.unitPrice) : Math.round(k.ratePerSqm)],
+      [k.isBox ? "Quantity (nos)" : "Rolls (nos)", k.isBox ? k.qty : s.roll.nos],
+      ["Total area (sqm)", this.fmt(k.totalArea, 2)],
+      ["Total weight (M Tonne)", this.fmt(k.weightMT, 2)],
+      ["Volume (Cum)", this.fmt(k.volume, 2)],
+      ["Freight (Rs)", this.n(s.freight) > 0 ? s.freight : "Nil — Ex-Factory, transportation in buyer's scope"],
+      [this.n(s.freight) > 0 ? (k.isBox ? "Rate incl. freight per box (Rs)" : "Rate incl. freight per SQM (Rs)") : "Basis",
+        this.n(s.freight) > 0
+          ? Math.round(k.isBox ? k.min.forRate : k.min.ratePerSqm + this.n(s.freight) / (k.totalArea || 1)) + " – " + Math.round(k.isBox ? k.forRate : k.ratePerSqm + this.n(s.freight) / (k.totalArea || 1))
+          : "Ex-Factory Haridwar, Excl. GST"],
+      ["Order value (Rs)", Math.round(k.min.orderValue) + " – " + Math.round(k.orderValue)],
+      ["", ""],
+      ["Quote", this.quoteText(k).replace(/\n/g, " ")]
+    ];
+    const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    const html = "<html xmlns:x='urn:schemas-microsoft-com:office:excel'><head><meta charset='utf-8'></head><body><table>" +
+      rows.map(r => "<tr><td style='font-weight:" + (r[1] === "" && r[0] ? "bold" : "normal") + "'>" + esc(r[0]) + "</td><td>" + esc(r[1]) + "</td></tr>").join("") +
+      "</table></body></html>";
+    const blob = new Blob([html], { type: "application/vnd.ms-excel" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "Rate-" + (s.cust.person || s.cust.company || "quote").replace(/[^\w]+/g, "-") + ".xls";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    this.setState({ exported: true });
+  };
+
+  renderVals() {
+    const s = this.state, k = this.calc();
+    const miss = this.missing();
+    const now = new Date(), dow = now.getDay();
+    const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const lastDue = (() => { const d = new Date(dayStart); for (let i = 0; i < 7; i++) { if (d.getDay() === 1 || d.getDay() === 4) return d.getTime(); d.setDate(d.getDate() - 1); } return dayStart; })();
+    const remind = !s.revisedAt || s.revisedAt < lastDue;
+    const remindText = (dow === 1 || dow === 4) && lastDue === dayStart
+      ? "Today is " + (dow === 1 ? "Monday" : "Thursday") + " — revise raw material rates before quoting."
+      : "Rate revision overdue since " + new Date(lastDue).toLocaleDateString("en-IN", { weekday: "long" }) + " — update before quoting.";
+    const zohoOn = /^https:\/\//.test((s.zohoUrl || "").trim());
+    const syncedN = s.saves.filter(q => q.sync === "synced").length;
+    const pendingN = s.saves.filter(q => q.sync === "pending").length;
+    const ph = String(s.cust.phone || "").replace(/\D/g, "");
+    const match = s.screen === "customer" && ph.length >= 10
+      ? s.saves.find(q => q.cust && String(q.cust.phone || "").replace(/\D/g, "") === ph && (q.cust.person !== s.cust.person || q.cust.location !== s.cust.location))
+      : null;
+    const showErr = s.touched;
+    const go = sc => () => this.setState({ screen: sc });
+    const tick = on => on ? "✓" : "";
+    const box = on => on ? "var(--color-accent-600)" : "var(--color-neutral-700)";
+    const bg = on => on ? "rgba(145,132,217,.22)" : "transparent";
+
+    const titles = {
+      home: ["Rate Calculator", "Gabion · Terracare Products Pvt. Ltd."],
+      customer: ["Customer details", "Mandatory before calculating"],
+      calc: [k.isBox ? "Rate per Box" : "Mesh per SQM", (s.cust.person || s.cust.company || "New quote") + " · live"],
+      summary: ["Quote summary", (s.cust.person || "New quote") + (s.cust.location ? " · " + s.cust.location : "")],
+      zoho: ["Zoho Sheet", "Customer database & leads"],
+      rates: ["Rates & factors", s.unlocked ? "Admin · unlocked" : "Admin · PIN required"]
+    };
+    const t = titles[s.screen];
+
+    const heroLabel = k.isBox ? "Rate per box" : "Rate per SQM";
+    const heroValue = k.isBox ? this.rupee(k.unitPrice) : this.rupee(k.ratePerSqm);
+    const heroMin = k.isBox ? this.rupee(k.min.unitPrice) : this.rupee(k.min.ratePerSqm);
+    const heroMinNote = "Margin Rs " + this.fmt(k.min.margin, 0) + "/Kg";
+    const heroMaxNote = "Margin Rs " + this.fmt(k.margin, 0) + "/Kg";
+    const heroNote = k.isBox
+      ? this.fmt(k.weight, 2) + " kg · " + this.fmt(k.area, 2) + " sqm per box"
+      : this.fmt(k.unitWt, 2) + " kg/sqm · " + this.rupee(k.unitPrice) + " per roll";
+
+    return {
+      jumpItems: [
+        { n: "01", label: "Home", note: "recent quotes", go: go("home"), bg: s.screen === "home" ? "rgba(145,132,217,.12)" : "transparent" },
+        { n: "02", label: "Customer details", note: "mandatory", go: go("customer"), bg: s.screen === "customer" ? "rgba(145,132,217,.12)" : "transparent" },
+        { n: "03", label: "Calculator", note: "live result", go: go("calc"), bg: s.screen === "calc" ? "rgba(145,132,217,.12)" : "transparent" },
+        { n: "04", label: "Quote & Excel", note: "share / export", go: go("summary"), bg: s.screen === "summary" ? "rgba(145,132,217,.12)" : "transparent" },
+        { n: "05", label: "Zoho Sheet", note: "leads sync", go: go("zoho"), bg: s.screen === "zoho" ? "rgba(145,132,217,.12)" : "transparent" },
+        { n: "06", label: "Rates & factors", note: "admin · PIN", go: go("rates"), bg: s.screen === "rates" ? "rgba(145,132,217,.12)" : "transparent" }
+      ],
+      isHome: s.screen === "home", isCustomer: s.screen === "customer", isCalc: s.screen === "calc", isSummary: s.screen === "summary",
+      screenTitle: t[0], screenSub: t[1],
+      backBg: s.screen === "home" ? "transparent" : "rgba(145,132,217,.14)",
+      back: () => this.setState({ screen: s.screen === "summary" ? "calc" : s.screen === "calc" ? "customer" : "home" }),
+      newQuote: () => this.setState({ screen: "customer", touched: false }),
+      statQuotes: String(s.saves.length + 9),
+      statRate: "₹" + this.fmt(38.4 + k.orderValue / 100000, 1) + " L",
+      recent: s.saves.map(q => ({
+        ...q, open: go("summary"),
+        syncLabel: q.sync === "synced" ? "Zoho ✓" : q.sync === "sending" ? "Sending…" : q.sync === "pending" ? "Not synced" : "",
+        syncColor: q.sync === "synced" ? "var(--color-accent-300)" : "var(--color-neutral-500)"
+      })),
+      hasMatch: !!match,
+      matchLine: match ? match.cust.person + " · " + match.cust.location : "",
+      matchNote: match ? "Quoted before" + (match.cust.company ? " · " + match.cust.company : "") + " — tap to fill details" : "",
+      fillMatch: () => match && this.setState(st => ({ cust: { ...match.cust, ...Object.fromEntries(Object.entries(st.cust).filter(([, v]) => String(v).trim())) } })),
+
+      custEssential: CUST.filter(f => f.req).map(f => this.custField(f, showErr)),
+      custOptional: CUST.filter(f => !f.req).map(f => this.custField(f, showErr)),
+
+      submitCustomer: () => this.setState(st => (this.missing().length ? { touched: true } : { screen: "calc", touched: false })),
+      contBorder: miss.length ? "var(--color-neutral-700)" : "var(--color-accent)",
+      contColor: miss.length ? "var(--color-neutral-500)" : "var(--color-accent-200)",
+      contHint: miss.length ? miss.length + " mandatory field" + (miss.length > 1 ? "s" : "") + " left" : "All details captured",
+
+      setBox: () => this.setState({ mode: "box" }), setMesh: () => this.setState({ mode: "mesh" }),
+      isBoxMode: k.isBox, isMeshMode: !k.isBox,
+      boxTabBg: k.isBox ? "rgba(145,132,217,.2)" : "transparent",
+      meshTabBg: k.isBox ? "transparent" : "rgba(145,132,217,.2)",
+      boxTabColor: k.isBox ? "var(--color-accent-200)" : "var(--color-neutral-500)",
+      meshTabColor: k.isBox ? "var(--color-neutral-500)" : "var(--color-accent-200)",
+
+      costRows: OPTIONS.map(r => {
+        const meshLock = r.key === "boxMaking" && !k.isBox;
+        const on = meshLock ? false : s.on[r.key];
+        const locked = meshLock;
+        return {
+          label: r.label,
+          note: meshLock ? "Not applicable — mesh roll" : r.note,
+          tick: tick(on), boxBorder: box(on), boxBg: bg(on),
+          labelColor: on ? "var(--color-text)" : "var(--color-neutral-600)",
+          toggle: locked ? () => {} : () => this.setState(st => ({ on: { ...st.on, [r.key]: !st.on[r.key] } }))
+        };
+      }),
+      unitRateNote: k.isBox
+        ? "Rates are applied internally — no raw material working is shown or exported."
+        : "Mesh roll — box making excluded automatically, mesh unit weight applied.",
+
+      dimFields: [
+        { label: "Length m", value: s.dims.L, onChange: e => this.set(["dims", "L"], e.target.value) },
+        { label: "Breadth m", value: s.dims.B, onChange: e => this.set(["dims", "B"], e.target.value) },
+        { label: "Height m", value: s.dims.H, onChange: e => this.set(["dims", "H"], e.target.value) }
+      ],
+      presets: [
+        ["3 × 2 × 0.6", 3, 2, 0.6], ["3 × 1 × 1", 3, 1, 1], ["2 × 1 × 1", 2, 1, 1], ["4 × 1 × 1", 4, 1, 1]
+      ].map(p => {
+        const active = this.n(s.dims.L) === p[1] && this.n(s.dims.B) === p[2] && this.n(s.dims.H) === p[3];
+        return {
+          label: p[0], border: active ? "var(--color-accent)" : "var(--color-neutral-800)",
+          color: active ? "var(--color-accent-200)" : "var(--color-neutral-400)",
+          apply: () => this.setState({ dims: { L: p[1], B: p[2], H: p[3] } })
+        };
+      }),
+      optionRows: [
+        { key: "diaph", label: "Diaphragm wall", note: k.diaN + " nos (round of L − 1) × B × H", value: this.fmt(k.dia, 2) + " sqm" },
+        { key: "tdiaph", label: "Transverse diaphragm", note: k.tdiaN + " nos (round of B − 1) × L × H", value: this.fmt(k.tdia, 2) + " sqm" },
+        { key: "tail", label: "Tail", note: s.tail ? "L × " + (s.tailN || "—") + " m" : "adds L × tail length", value: this.fmt(k.tailArea, 2) + " sqm" }
+      ].map(o => ({
+        label: o.label, note: o.note, value: o.value,
+        tick: tick(s[o.key]), boxBorder: box(s[o.key]), boxBg: bg(s[o.key]),
+        labelColor: s[o.key] ? "var(--color-text)" : "var(--color-neutral-600)",
+        toggle: () => this.setState(st => ({ [o.key]: !st[o.key] }))
+      })),
+
+      tail: s.tail,
+      tailN: s.tailN,
+      setTailN: e => this.setState({ tailN: e.target.value, copied: false, saved: false, exported: false }),
+      rollFields: [
+        { label: "Roll length m", value: s.roll.len, onChange: e => this.set(["roll", "len"], e.target.value) },
+        { label: "Roll width m", value: s.roll.wid, onChange: e => this.set(["roll", "wid"], e.target.value) },
+        { label: "No. of rolls", value: s.roll.nos, onChange: e => this.set(["roll", "nos"], e.target.value) }
+      ],
+      areaPerRollTxt: this.fmt(k.areaPerRoll, 2) + " sqm",
+      totalAreaTxt: this.fmt(k.rollTotalArea, 0) + " sqm",
+
+      specOptions: s.specs.map((sp, i) => ({ i: i, label: sp.label })),
+      specIndex: s.spec,
+      setSpec: e => this.setState({ spec: parseInt(e.target.value, 10) }),
+      unitWtSource: k.boxMakingOn ? "box" : "mesh",
+      unitWtTxt: this.fmt(k.unitWt, 3) + " kg/sqm",
+      areaLabel: k.isBox ? "Total surface area / box" : "Area per roll",
+      areaTxt: this.fmt(k.area, 2) + " sqm",
+      weightLabel: k.isBox ? "Weight per box" : "Weight per roll",
+      weightTxt: this.fmt(k.weight, 2) + " kg",
+
+      qtyLabel: k.isBox ? "No. of boxes" : "No. of rolls",
+      qty: k.isBox ? s.qty : s.roll.nos,
+      setQty: e => (k.isBox ? this.setState({ qty: e.target.value }) : this.set(["roll", "nos"], e.target.value)),
+      freight: s.freight,
+      setFreight: e => this.setState({ freight: e.target.value }),
+      toggleLacing: () => this.setState(st => ({ lacing: !st.lacing })),
+      lacingTick: tick(s.lacing), lacingBorder: box(s.lacing), lacingBg: bg(s.lacing),
+      lacingLabelColor: s.lacing ? "var(--color-text)" : "var(--color-neutral-600)",
+      lacingNote: this.fmt(k.weight * this.n(s.lacingPct) / 100, 2) + " kg of lacing wire",
+      lacingTitle: "Include lacing wire — " + s.lacingPct + "%",
+      lacingAmtTxt: s.lacing ? this.rupee(k.lacingAmt) : "—",
+
+      freightOn: this.n(s.freight) > 0,
+      freightHead: this.n(s.freight) > 0
+        ? (k.isBox ? "Rate incl. freight — per box" : "Rate incl. freight — per SQM")
+        : "Ex-Factory Haridwar",
+      freightValue: this.n(s.freight) > 0
+        ? this.rupee(k.isBox ? k.min.forRate : k.min.ratePerSqm + this.n(s.freight) / (k.totalArea || 1)) + " – " + this.rupee(k.isBox ? k.forRate : k.ratePerSqm + this.n(s.freight) / (k.totalArea || 1))
+        : "Transportation in buyer's scope",
+      freightNote: this.n(s.freight) > 0
+        ? this.rupee(s.freight) + " freight ÷ " + (k.isBox ? k.qty + " boxes" : this.fmt(k.totalArea, 0) + " sqm") + " · delivered " + (s.cust.location || s.cust.delivery || "site")
+        : "No freight added — rates quoted ex-factory, excl. GST",
+      freightBorder: this.n(s.freight) > 0 ? "var(--color-accent)" : "var(--color-neutral-700)",
+      freightColor: this.n(s.freight) > 0 ? "var(--color-accent-200)" : "var(--color-neutral-300)",
+      rollup: [
+        { label: k.isBox ? "Total area" : "Total area", value: this.fmt(k.totalArea, 0) + " sqm" },
+        { label: "Total weight", value: this.fmt(k.weightMT, 2) + " M Tonne" },
+        { label: "Volume of goods", value: this.fmt(k.volume, 2) + " Cum" },
+        { label: this.n(s.freight) > 0 ? "Rate incl. freight" : "Basis", value: this.n(s.freight) > 0 ? this.rupee(k.isBox ? k.forRate : k.ratePerSqm + this.n(s.freight) / (k.totalArea || 1)) : "Ex-Factory" },
+        { label: "Order value", value: this.rupee(k.min.orderValue) + " – " + this.rupee(k.orderValue) }
+      ],
+
+      heroLabel, heroValue, heroNote, heroMin, heroMinNote, heroMaxNote,
+      goSummary: go("summary"),
+      custLine: (s.cust.person || "—") + " · " + (s.cust.phone || "—") + " · " + (s.cust.location || "—") + "\n" + (s.cust.company || "No company given") + (s.cust.email ? " · " + s.cust.email : "") + (s.cust.gst ? " · GST " + s.cust.gst : "") + (s.cust.delivery ? " · Deliver to " + s.cust.delivery : ""),
+      quoteText: this.quoteText(k),
+      transportText: this.transportText(k),
+      copyLabel: s.copied ? "Copied ✓" : "Copy text",
+      shareLabel: s.shared ? "Shared ✓" : "Share on WhatsApp",
+      copyQuote: () => { this.toClipboard(this.quoteText(k)); this.setState({ copied: true, shared: false }); },
+      shareQuote: () => {
+        const txt = this.quoteText(k) + "\n\n" + this.transportText(k);
+        const done = () => this.setState({ shared: true, copied: false });
+        if (navigator.share) { navigator.share({ text: txt }).then(done).catch(() => {}); return; }
+        try { window.open("https://wa.me/?text=" + encodeURIComponent(txt), "_blank", "noopener"); } catch (e) {}
+        this.toClipboard(txt); done();
+      },
+      summaryRows: [
+        { label: "Specification", value: k.spec.label },
+        { label: k.isBox ? "Size" : "Roll", value: k.isBox ? s.dims.L + " × " + s.dims.B + " × " + s.dims.H + " m" : s.roll.len + " × " + s.roll.wid + " m × " + s.roll.nos },
+        { label: "Unit weight", value: this.fmt(k.unitWt, 3) + " kg/sqm" },
+        { label: k.isBox ? "Weight per box" : "Weight per roll", value: this.fmt(k.weight, 2) + " kg" },
+        { label: "Lacing wire", value: s.lacing ? this.rupee(k.lacingAmt) + " (" + s.lacingPct + "%)" : "Not included" },
+        { label: k.isBox ? "Boxes" : "Rolls", value: String(k.isBox ? s.qty : s.roll.nos) },
+        { label: "Total weight", value: this.fmt(k.weightMT, 2) + " M Tonne" },
+        { label: "Order value", value: this.rupee(k.min.orderValue) + " – " + this.rupee(k.orderValue) }
+      ],
+      exportLabel: s.exported ? "Excel downloaded ✓" : "Export to Excel (.xls)",
+      exportExcel: this.exportExcel,
+      saveLabel: s.saved ? "Saved to recent ✓" : "Save quote",
+      saveQuote: () => {
+        if (s.saved) return;
+        const id = "q" + Date.now();
+        const row = this.leadRow(k);
+        const hasUrl = /^https:\/\//.test((s.zohoUrl || "").trim());
+        const entry = {
+          id: id, row: row, cust: { ...s.cust },
+          company: s.cust.person + (s.cust.location ? " · " + s.cust.location : ""),
+          spec: k.spec.label + " · " + (k.isBox ? s.dims.L + "×" + s.dims.B + "×" + s.dims.H + " m" : "roll " + s.roll.len + "×" + s.roll.wid + " m"),
+          rate: k.isBox ? this.rupee(k.min.unitPrice) + "–" + this.rupee(k.unitPrice) : this.rupee(k.min.ratePerSqm) + "–" + this.rupee(k.ratePerSqm) + "/SQM",
+          mode: k.isBox ? "Box" : "Mesh",
+          meta: (k.isBox ? s.qty + " nos" : s.roll.nos + " rolls") + " · " + new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short" }),
+          sync: hasUrl ? "sending" : "pending"
+        };
+        this.setState(st => { const saves = [entry, ...st.saves]; this.persist(saves); return { saved: true, saves: saves }; });
+        if (hasUrl) this.sendLead(id, row);
+      },
+      saveNote: !s.saved ? (zohoOn ? "Saving also adds this lead to your Zoho Sheet." : "Saved on this phone — connect Zoho Sheet from Home to sync leads.")
+        : (s.saves[0] && s.saves[0].sync === "synced" ? "Lead sent to Zoho Sheet ✓" : s.saves[0] && s.saves[0].sync === "sending" ? "Sending to Zoho Sheet…" : "Saved — will sync to Zoho when connected"),
+      saveNoteColor: s.saved && s.saves[0] && s.saves[0].sync === "synced" ? "var(--color-accent-300)" : "var(--color-neutral-500)",
+
+      isRates: s.screen === "rates",
+      remindOn: remind,
+      remindText: remindText,
+      remindBorder: remind ? "var(--color-accent)" : "var(--color-neutral-800)",
+      remindBg: remind ? "rgba(145,132,217,.08)" : "var(--color-surface)",
+      revisedLine: s.revisedAt ? "Last revised " + new Date(s.revisedAt).toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short" }) + " · revise Mon & Thu" : "Never revised · revise every Mon & Thu",
+      goRates: () => this.setState({ screen: "rates", pinEntry: "", pinErr: false }),
+      isLocked: !s.unlocked, isUnlocked: !!s.unlocked,
+      pinEntry: s.pinEntry,
+      setPinEntry: e => this.setState({ pinEntry: e.target.value.replace(/\D/g, "").slice(0, 6), pinErr: false }),
+      unlock: () => this.setState(st => st.pinEntry === st.pin ? { unlocked: true, pinEntry: "", pinErr: false } : { pinErr: true }),
+      pinMsg: s.pinErr ? "Wrong PIN — try again" : "Default PIN is 1234 — change it after unlocking.",
+      pinMsgColor: s.pinErr ? "var(--color-accent-400)" : "var(--color-neutral-600)",
+      lock: () => this.setState({ unlocked: false, screen: "home" }),
+      adminCosts: COSTS.map(r => ({ label: r.key === "margin" ? "Risk & margin — Max rate (min Rs 3)" : r.label, value: s.costs[r.key], onChange: e => { this.set(["costs", r.key], e.target.value); this.setState({ ratesSaved: false }); } })),
+      adminFactors: [
+        { label: "Risk & margin — Min rate", unit: "Rs/Kg", value: s.minMargin, onChange: e => this.setState({ minMargin: e.target.value, ratesSaved: false }) },
+        { label: "Lacing wire", unit: "% of weight", value: s.lacingPct, onChange: e => this.setState({ lacingPct: e.target.value, ratesSaved: false }) },
+        { label: "Packed area per Cum", unit: "sqm / Cum", value: s.volDiv, onChange: e => this.setState({ volDiv: e.target.value, ratesSaved: false }) }
+      ],
+      adminSpecs: s.specs.map((sp, i) => ({
+        label: sp.label, mesh: sp.mesh, box: sp.box,
+        setMesh: e => { const v = e.target.value; this.setState(st => ({ ratesSaved: false, specs: st.specs.map((x, j) => j === i ? { ...x, mesh: v } : x) })); },
+        setBoxW: e => { const v = e.target.value; this.setState(st => ({ ratesSaved: false, specs: st.specs.map((x, j) => j === i ? { ...x, box: v } : x) })); }
+      })),
+      adminPreview: "Current quote: Min " + (k.isBox ? this.rupee(k.min.unitPrice) : this.rupee(k.min.ratePerSqm)) + " · Max " + (k.isBox ? this.rupee(k.unitPrice) + "/Box" : this.rupee(k.ratePerSqm) + "/SQM") + " · unit rate " + this.fmt(k.min.unitRate, 2) + "–" + this.fmt(k.unitRate, 2) + " Rs/Kg",
+      saveRates: () => {
+        try { localStorage.setItem("rc-rates", JSON.stringify({ revisedAt: Date.now(), costs: s.costs, specs: s.specs.map(x => ({ label: x.label, mesh: this.n(x.mesh), box: this.n(x.box) })), lacingPct: this.n(s.lacingPct), volDiv: this.n(s.volDiv), minMargin: this.n(s.minMargin), pin: s.pin })); } catch (e) {}
+        this.setState({ ratesSaved: true, revisedAt: Date.now() });
+      },
+      ratesSaveLabel: s.ratesSaved ? "Rates saved ✓" : "Save rates",
+      resetRates: () => this.setState({ costs: { gi: 66, prod: 12, heavy: 18, pvc: 10, boxMaking: 3, margin: 3 }, specs: SPECS.map(x => ({ ...x })), lacingPct: 2.5, volDiv: 135, minMargin: 1, ratesSaved: false }),
+      newPin: s.newPin,
+      setNewPin: e => this.setState({ newPin: e.target.value.replace(/\D/g, "").slice(0, 6) }),
+      changePin: () => { if (s.newPin.length < 4) return; this.setState({ pin: s.newPin, newPin: "", ratesSaved: false }); },
+      pinChangeLabel: s.newPin.length >= 4 ? "Set PIN" : "4–6 digits",
+      isZoho: s.screen === "zoho",
+      goZoho: go("zoho"),
+      zohoUrl: s.zohoUrl || "",
+      setZohoUrl: e => { const v = e.target.value; try { localStorage.setItem("rc-zoho-url", v); } catch (er) {} this.setState({ zohoUrl: v, zohoTest: "" }); },
+      zohoDot: zohoOn ? "var(--color-accent-300)" : "var(--color-neutral-600)",
+      zohoHalo: zohoOn ? "rgba(145,132,217,.18)" : "rgba(233,233,237,.05)",
+      zohoHomeNote: zohoOn ? "Connected · " + syncedN + " synced" + (pendingN ? " · " + pendingN + " pending" : "") : "Not connected · " + pendingN + " leads waiting",
+      zohoStatus: s.zohoTest === "sent" ? "Test row sent — check the sheet for a row named “TEST”." : s.zohoTest === "fail" ? "Couldn't reach that URL. Check it starts with https:// and the flow is switched on."
+        : zohoOn ? "Every saved quote is posted as one row." : "Paste the webhook URL from your Zoho Flow.",
+      zohoStatusColor: s.zohoTest === "fail" ? "var(--color-accent-400)" : s.zohoTest === "sent" ? "var(--color-accent-300)" : "var(--color-neutral-500)",
+      testZoho: () => {
+        const row = this.leadRow(k);
+        row["Name"] = "TEST"; row["Phone"] = "0000000000"; row["Location"] = "Test from Rate Calculator";
+        this.postRow(row).then(() => this.setState({ zohoTest: "sent" })).catch(() => this.setState({ zohoTest: "fail" }));
+      },
+      pendingLabel: pendingN ? "Sync " + pendingN + " pending" : "All synced",
+      syncPending: () => { if (!zohoOn) return; s.saves.filter(q => q.sync === "pending" && q.row).forEach(q => this.sendLead(q.id, q.row)); },
+      zohoSteps: [
+        { n: "1", t: "In Zoho Flow, create a flow with the trigger “Webhook”, and pick form data as the payload format." },
+        { n: "2", t: "Copy the webhook URL it gives you and paste it above." },
+        { n: "3", t: "Add the action Zoho Sheet → “Add row”, then choose your workbook and the leads worksheet." },
+        { n: "4", t: "Map each webhook field (Name, Phone, Location…) to the matching column header." },
+        { n: "5", t: "Switch the flow on, then tap “Send test row” to check it." }
+      ],
+      zohoCols: ["Date", "Name", "Phone", "Location", "Company", "Email", "GST", "Delivery", "Product", "Spec", "Size", "Qty", "Coating", "Diaphragm", "Transverse", "Tail (m)", "Lacing", "Weight (MT)", "Min Rate", "Max Rate", "Freight", "Rate incl. Freight", "Order Value", "Quote"]
+    };
+  }
+}
+
+</script>
+</body>
+</html>
